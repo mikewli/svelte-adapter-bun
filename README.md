@@ -2,6 +2,9 @@
 
 [Adapter](https://kit.svelte.dev/docs/adapters) for SvelteKit apps that generates a standalone [Bun](https://github.com/oven-sh/bun) server.
 
+## Fork Differences
+I prioritize handling production usage with graceful shutdowns and zero downtime deployment, so I implement a version of the adapter with graceful shutdown functionality, similar to the graceful shutdown provided by the [node adapter](https://svelte.dev/docs/kit/adapter-node#Graceful-shutdown).
+
 ## :zap: Usage
 
 Install with `bun add -d svelte-adapter-bun`, then add the adapter to your `svelte.config.js`:

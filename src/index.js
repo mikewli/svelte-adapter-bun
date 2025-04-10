@@ -25,4 +25,24 @@ const serverOptions = {
 websocket ? (serverOptions.websocket = websocket) : 0;
 
 console.info(`Listening on ${hostname + ":" + port}` + (websocket ? " (Websocket)" : ""));
-serve(serverOptions);
+const server = serve(serverOptions);
+
+const cancelInFlightRequestsAndWebsockets = env("CANCEL_IN_FLIGHT_REQUESTS_AND_WEBSOCKETS", "true") === "true";
+let shuttingDown = false;
+
+/**
+ * @param {'SIGINT' | 'SIGTERM' | 'IDLE'} reason
+ */
+const gracefulShutdown = async (reason) => {
+  if (shuttingDown) return;
+  shuttingDown = true;
+
+  await server.stop(cancelInFlightRequestsAndWebsockets);
+  // @ts-expect-error custom events cannot be typed
+  process.emit("sveltekit:shutdown", reason);
+
+  process.exit(0);
+};
+
+process.on("SIGINT", gracefulShutdown);
+process.on("SIGTERM", gracefulShutdown);
