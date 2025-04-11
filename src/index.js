@@ -40,8 +40,6 @@ const gracefulShutdown = async (reason) => {
   await server.stop(cancelInFlightRequestsAndWebsockets);
   // @ts-expect-error custom events cannot be typed
   process.emit("sveltekit:shutdown", reason);
-
-  process.exit(0);
 };
 
 process.on("SIGINT", gracefulShutdown);
